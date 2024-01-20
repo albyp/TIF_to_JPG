@@ -27,7 +27,7 @@ existing_files = set(os.listdir(output_path))
 for root, dirs, files in os.walk(path):
     for name in files:
         # check if the file has the specified extension, does not contain "tiles" or "dem" in its name
-        if extension in name and "tiles" not in name.lower() and "dem" not in name.lower():
+        if extension in name and "tile" not in name.lower() and "dem" not in name.lower():
             # check if the file is not already in the output folder
             if name not in existing_files:
                 print("Processing file: ", name)
@@ -42,8 +42,8 @@ for root, dirs, files in os.walk(path):
                     out = im.convert('RGB')
                     out.save(outfile, 'JPEG', quality=img_quality)
                     print("File saved as:", outfile)
-                except UnidentifiedImageError:
-                    print("Skipping file (UnidentifiedImageError): ", name)
+                except (UnidentifiedImageError, OSError) as e:
+                    print(f"Skipping file ({type(e).__name__}): {name}")
             else:
                 print("File already exists in the output folder: ", name)
         else:
